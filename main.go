@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql" // Use the MySQL driver
@@ -25,9 +26,8 @@ var db *sql.DB
 func initDB() {
 	var err error
 
-	// Update the connection string for MySQL
-	// Format: username:password@tcp(host:port)/database
-	connectionString := "mysql://root:pkpUHuASrzaVrpIkGnpnnwQnxLrQTfjY@autorack.proxy.rlwy.net:56128/railway"
+	// Read the database URL from the environment variable
+	connectionString := os.Getenv("DATABASE_URL")
 
 	db, err = sql.Open("mysql", connectionString)
 	if err != nil {
@@ -55,7 +55,7 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Update the query to use ? placeholders for MySQL
-	query := `INSERT INTO User (Username, JenisBank, NoRekening, NamaRekening, Server , CreatedDate) VALUES (?, ?, ?, ?, ?, ?)`
+	query := `INSERT INTO User (Username, JenisBank, NoRekening, NamaRekening, Server , TanggalDaftar) VALUES (?, ?, ?, ?, ?, ?)`
 	_, err = db.Exec(query, data.Username, data.JenisBank, data.NoRekening, data.NamaRekening, data.Server, time.Now())
 	if err != nil {
 		log.Printf("Failed to insert data: %v", err)
@@ -67,12 +67,8 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Data saved successfully"))
 }
 
-// Serve the index.html file when visiting the root route
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	// Serve index.html from the current directory
-	http.ServeFile(w, r, "index.html")
-	// Or, if you use a static folder, use:
-	// http.ServeFile(w, r, "static/index.html")
+	http.ServeFile(w, r, "static/index.html")
 }
 
 func main() {
@@ -89,6 +85,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", indexHandler)
 	mux.HandleFunc("/submit", submitHandler)
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	fmt.Println("Server is running on port 8080...")
 	log.Fatal(http.ListenAndServe(":8080", c.Handler(mux))) // Wrap the handler with CORS

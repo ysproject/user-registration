@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
+	"os"
 
-	_ "github.com/go-sql-driver/mysql" // Use the MySQL driver
+	"github.com/joho/godotenv"
+
+	_ "github.com/lib/pq"
 	"github.com/rs/cors"
 )
 
@@ -25,11 +27,21 @@ var db *sql.DB
 func initDB() {
 	var err error
 
-	// Update the connection string for MySQL
-	// Format: username:password@tcp(host:port)/database
-	connectionString := "root:dxhKJMBOfokErBXhlNbeRaIkwxjszegl@tcp(autorack.proxy.rlwy.net:52916)/railway"
+	err = godotenv.Load()
+	if err != nil {
+		log.Println("Error loading .env file, using system environment variables")
+	}
 
-	db, err = sql.Open("mysql", connectionString)
+	// Supabase PostgreSQL connection string
+	connectionString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=require",
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_NAME"),
+	)
+
+	db, err = sql.Open("postgres", connectionString)
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
@@ -55,8 +67,10 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Update the query to use ? placeholders for MySQL
-	query := `INSERT INTO User (Username, JenisBank, NoRekening, NamaRekening, Server , TanggalDaftar) VALUES (?, ?, ?, ?, ?, ?)`
-	_, err = db.Exec(query, data.Username, data.JenisBank, data.NoRekening, data.NamaRekening, data.Server, time.Now())
+	query := `
+	INSERT INTO "User" ("Username", "JenisBank", "NoRekening", "NamaRekening", "Server") 
+	VALUES ($1, $2, $3, $4, $5)`
+	_, err = db.Exec(query, data.Username, data.JenisBank, data.NoRekening, data.NamaRekening, data.Server)
 	if err != nil {
 		log.Printf("Failed to insert data: %v", err)
 		http.Error(w, "Failed to save data", http.StatusInternalServerError)

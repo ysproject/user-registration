@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql" // Use the MySQL driver
@@ -26,8 +25,9 @@ var db *sql.DB
 func initDB() {
 	var err error
 
-	// Read the database URL from the environment variable
-	connectionString := os.Getenv("DATABASE_URL")
+	// Update the connection string for MySQL
+	// Format: username:password@tcp(host:port)/database
+	connectionString := "root:dxhKJMBOfokErBXhlNbeRaIkwxjszegl@tcp(autorack.proxy.rlwy.net:52916)/railway"
 
 	db, err = sql.Open("mysql", connectionString)
 	if err != nil {

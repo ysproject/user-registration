@@ -20,6 +20,7 @@ type FormData struct {
 	NoRekening   string `json:"noRekening"`
 	NamaRekening string `json:"namaRekening"`
 	Server       string `json:"server"`
+	NoTelepon    string `json:"noTelepon"`
 }
 
 var db *sql.DB
@@ -68,9 +69,9 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Update the query to use ? placeholders for MySQL
 	query := `
-	INSERT INTO "User" ("Username", "JenisBank", "NoRekening", "NamaRekening", "Server") 
-	VALUES ($1, $2, $3, $4, $5)`
-	_, err = db.Exec(query, data.Username, data.JenisBank, data.NoRekening, data.NamaRekening, data.Server)
+	INSERT INTO "User" ("Username", "JenisBank", "NoRekening", "NamaRekening", "Server", "NoTelepon") 
+	VALUES ($1, $2, $3, $4, $5, $6)`
+	_, err = db.Exec(query, data.Username, data.JenisBank, data.NoRekening, data.NamaRekening, data.Server, data.NoTelepon)
 	if err != nil {
 		log.Printf("Failed to insert data: %v", err)
 		http.Error(w, "Failed to save data", http.StatusInternalServerError)

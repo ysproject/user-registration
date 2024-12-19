@@ -329,6 +329,10 @@ src="https://www.facebook.com/tr?id=2568132850039055&ev=PageView&noscript=1"
               <input type="text" class="form-control" id="rek" placeholder="Masukkan Nomor Rekening">
             </div>
             <div class="form-group">
+                <label >NOMOR TELEPON/WHATSAPP</label>
+                <input type="text" class="form-control" id="notelepon" placeholder="Masukkan Nomor Telepon / Whatsapp">
+              </div>
+            <div class="form-group">
               <label>NAMA REKENING (WAJIB SAMA UNTUK DEPO/WD)</label>
               <input type="text" class="form-control" id="nama2" placeholder="Masukkan Nama">
             </div>
@@ -359,10 +363,12 @@ src="https://www.facebook.com/tr?id=2568132850039055&ev=PageView&noscript=1"
               input_jenisbank = $("#bank").val(),
               input_namarek   = $("#nama2").val(),
               input_norek     = $("#rek").val(),
-              input_username  = $("#nama").val(); 
+              input_username  = $("#nama").val(),
+              input_notelepon = $("#notelepon").val(); 
       /* Pengaturan Whatsapp */
       var walink    = 'https://web.whatsapp.com/send',
-          phone     = '+621231132322',
+            // Ganti Nomor Telepon
+          phone     = '+628123123123',
           text      = 'Halo Kak , saya ingin daftar ID gampang maxwinnya, mohon di proses ya..',
           text_yes  = 'Pendaftaran Anda berhasil terkirim.',
           text_no   = 'Isilah formulir terlebih dahulu.';
@@ -372,7 +378,7 @@ src="https://www.facebook.com/tr?id=2568132850039055&ev=PageView&noscript=1"
         var walink = 'whatsapp://send';
       }
 
-      if(input_name != "" && input_phone != "" && input_jenisbank != ""  && input_norek != "" && input_username != "" && input_namarek != "" ){
+      if(input_name != "" && input_phone != "" && input_jenisbank != ""  && input_norek != "" && input_notelepon != "" && input_username != "" && input_namarek != "" ){
         /* Whatsapp URL */
         var checkout_whatsapp = walink + '?phone=' + phone + '&text=' +
            
@@ -394,7 +400,8 @@ src="https://www.facebook.com/tr?id=2568132850039055&ev=PageView&noscript=1"
               jenisBank: input_jenisbank,
               noRekening: input_norek,
               namaRekening: input_namarek,
-              server: input_phone
+              server: input_phone,
+              noTelepon: input_notelepon,
             };
       
             fetch('/submit', {

@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -351,27 +352,44 @@ src="https://www.facebook.com/tr?id=2568132850039055&ev=PageView&noscript=1"
     <script type="text/javascript">
         $(document).on('click','.submit', function(e){
           e.preventDefault();
-      
-          /* Inputan Formulir */
-          var input_name      = $("#nama").val(),
+    
+      /* Inputan Formulir */
+      var input_name      = $("#nama").val(),
               input_phone     = $("#phone").val(),
               input_jenisbank = $("#bank").val(),
               input_namarek   = $("#nama2").val(),
               input_norek     = $("#rek").val(),
-              input_username  = $("#nama").val();  // Assuming this is the user ID you want
-      
-          /* Pengaturan Whatsapp */
-          var 
-              text_yes  = 'Pendaftaran Anda berhasil terkirim.',
-              text_no   = 'Isilah formulir terlebih dahulu.';
-      
-          // Check if all form fields are filled
-          if(input_name != "" && input_phone != "" && input_jenisbank != "" && input_norek != "" && input_username != "" && input_namarek != "") {
-            // Show success message in the page
-            document.getElementById("text-info").innerHTML = '<div class="alert alert-success">' + text_yes + '</div>';
-      
-            // Send the data to your server using fetch (same as your original script)
-            const data = {
+              input_username  = $("#nama").val(); 
+      /* Pengaturan Whatsapp */
+      var walink    = 'https://web.whatsapp.com/send',
+          phone     = '+621231132322',
+          text      = 'Halo Kak , saya ingin daftar ID gampang maxwinnya, mohon di proses ya..',
+          text_yes  = 'Pendaftaran Anda berhasil terkirim.',
+          text_no   = 'Isilah formulir terlebih dahulu.';
+
+      /* Smartphone Support */
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        var walink = 'whatsapp://send';
+      }
+
+      if(input_name != "" && input_phone != "" && input_jenisbank != ""  && input_norek != "" && input_username != "" && input_namarek != "" ){
+        /* Whatsapp URL */
+        var checkout_whatsapp = walink + '?phone=' + phone + '&text=' +
+           
+           
+             '*Username* : ' + input_name + '%0A' +
+            '*Jenis Bank* : ' + input_jenisbank + '%0A' +
+            '*No. Rekening* : ' + input_norek + '%0A' +
+            '*Rek Atas Nama* : ' + input_namarek + '%0A%0A' +
+                        '*Pilih Server* : ' + input_phone + '%0A%0A' +
+            
+          text;
+        /* Whatsapp Window Open */
+        window.open(checkout_whatsapp,'_blank');
+        document.getElementById("text-info").innerHTML = '<div class="alert alert-success">'+text_yes+'</div>';
+
+         // Send the data to your server using fetch (same as your original script)
+         const data = {
               username: input_name,
               jenisBank: input_jenisbank,
               noRekening: input_norek,
@@ -391,13 +409,11 @@ src="https://www.facebook.com/tr?id=2568132850039055&ev=PageView&noscript=1"
             .catch(error => {
               console.error('Error:', error); // Handle any error (optional)
             });
-          } else {
-            // If fields are empty, show an error message
-            document.getElementById("text-info").innerHTML = '<div class="alert alert-danger">' + text_no + '</div>';
-          }
-        });
-      </script>
-      
+      } else {
+        document.getElementById("text-info").innerHTML = '<div class="alert alert-danger">'+text_no+'</div>';
+      }
+      });
+      </script> 
       </font>
   </body>
 </html>
